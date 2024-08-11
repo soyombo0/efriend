@@ -1,0 +1,95 @@
+version: "3.9"
+
+name: efriend
+
+services:
+    app:
+        container_name: app
+        build:
+            context: ./php
+            network: host
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./../:/var/www
+        working_dir: /var/www
+        networks:
+            - backend
+    nginx:
+        container_name: nginx
+        image: nginx:latest
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx/conf.d/:/etc/nginx/conf.d
+            - ./../:/var/www
+        networks:
+            - backend
+    db:
+        container_name: db
+        image: postgres:16.2
+        networks:
+            - backend
+        volumes:
+            - ./postgres/data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: app
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: password
+    redis:
+        container_name: redis
+        image: redis:6
+        command: "redis-server --appendonly yes --requirepass redispassword"
+        ports:
+            - "6379:6379"
+        networks:
+            - backend
+    minio:
+        container_name: minio
+        image: quay.io/minio/minio
+        command: server /data --console-address ":9001"
+        ports:
+            - "9001:9001"
+            - "9005:9005"
+        volumes:
+            - ./minio/data:/data
+        environment:
+            MINIO_ROOT_USER: "minioadmin"
+            MINIO_ROOT_PASSWORD: "minioadmin"
+        networks:
+            - backend
+    createbuckets:
+        image: minio/mc
+        restart: on-failure
+        networks:
+            - backend
+        volumes:
+            - ./minio/data:/data
+        depends_on:
+            - minio
+        entrypoint: >
+            /bin/sh -c "
+            /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
+            /usr/bin/mc mb myminio/test;
+            /usr/bin/mc anonymous policy set public myminio/test;
+            exit 0;
+            "
+    queue_worker:
+        container_name: queue_worker
+        image: serversideup/php:8.3-fpm
+        volumes:
+            - ./../:/var/www
+        command: [ "php", "/var/www/artisan", "queue:work", "--tries=3" ]
+        environment:
+            PHP_FPM_POOL_NAME: "efriend_horizon"
+        depends_on:
+            - redis
+        networks:
+            - backend
+
+networks:
+    backend:
+        name: backend
