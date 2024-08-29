@@ -14,7 +14,7 @@ class GameController extends Controller
      */
     public function index()
     {
-        return 1;
+        return inertia('Games/Games');
     }
 
     /**

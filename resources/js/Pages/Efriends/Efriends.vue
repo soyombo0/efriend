@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  $END$
+    <p>Efirends page</p>
 </template>
 
 <style scoped>

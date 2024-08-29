@@ -11,7 +11,7 @@ class EfriendController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Efriends/Efriends');
     }
 
     /**

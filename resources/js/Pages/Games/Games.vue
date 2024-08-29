@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  $END$
+    <p>games pages</p>
 </template>
 
 <style scoped>

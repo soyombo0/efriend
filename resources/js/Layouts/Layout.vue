@@ -1,9 +1,15 @@
 <script setup>
-
+import Navbar from "@/Pages/Shared/Navbar.vue";
 </script>
 
 <template>
-  $END$
+    <div class="">
+        <Navbar></Navbar>
+
+        <section>
+            <slot />
+        </section>
+    </div>
 </template>
 
 <style scoped>
