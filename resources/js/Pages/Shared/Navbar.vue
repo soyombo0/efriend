@@ -1,17 +1,20 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-import {Link} from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
+import { computed } from 'vue';
+
+const page = usePage()
+const user = computed(() => page.props.auth.user);
 
 const navigation = [
     { name: 'Home', href: '/', current: false },
     { name: 'Efriends', href: '/efriends', current: false },
     { name: 'Games', href: '/games', current: false },
-    { name: 'Calendar', href: '#', current: false },
 ]
 </script>
 <template>
-    <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-gray-950" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-16 items-center justify-between">
                 <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -33,7 +36,7 @@ const navigation = [
                         </div>
                     </div>
                 </div>
-                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <div v-if="user" class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                         <span class="absolute -inset-1.5" />
                         <span class="sr-only">View notifications</span>
@@ -58,11 +61,14 @@ const navigation = [
                                     <Link href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</Link>
                                 </MenuItem>
                                 <MenuItem v-slot="{ active }">
-                                    <Link href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</Link>
+                                    <Link href="/logout" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</Link>
                                 </MenuItem>
                             </MenuItems>
                         </transition>
                     </Menu>
+                </div>
+                <div v-else>
+                    <Link href="/signup" class="bg-gray-900 text-white hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Sign Up</Link>
                 </div>
             </div>
         </div>

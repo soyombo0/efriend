@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class EfriendController extends Controller
 {
@@ -11,7 +12,11 @@ class EfriendController extends Controller
      */
     public function index()
     {
-        return inertia('Efriends/Efriends');
+        $efriends = User::where('is_efriend', '1');
+
+        return inertia('Efriends/Efriends', [
+            'efriends' => $efriends
+        ]);
     }
 
     /**

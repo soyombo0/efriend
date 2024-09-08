@@ -2,62 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
+// use App\Http\Requests\UserUpdateRequest;
+// use App\Http\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): Response
+    // public function __construct(protected UserService $service)
+    // {
+    // }
+
+    public function create()
     {
-        return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
-        ]);
+        return inertia('User/Page');
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
     }
 
     /**
-     * Update the user's profile information.
+     * Store a newly created resource in storage.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit');
+        //
     }
 
     /**
-     * Delete the user's account.
+     * Display the specified resource.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function show(string $id)
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
+        //
+    }
 
-        $user = $request->user();
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UserUpdateRequest $request)
+    {
+        $data = $request->validated();
+        $user = auth()->user();
+        $user->update($data);
+    }
 
-        Auth::logout();
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
 
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+    public function storePic(Request $request)
+    {
+        // $pic = $this->service->storePic($request);
+        //
+        // return inertia('User/Page', [
+        //     "data" => $pic
+        // ]);
     }
 }

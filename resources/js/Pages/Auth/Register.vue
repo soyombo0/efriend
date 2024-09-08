@@ -1,103 +1,32 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import {Link, useForm, usePage} from "@inertiajs/vue3";
+import {computed} from "vue";
 
-const form = useForm({
-    name: '',
+let form = useForm({
     email: '',
-    password: '',
-    password_confirmation: '',
+    name: '',
+    password: ''
 });
 
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+let submit = () => {
+  form.post('/signup');
 };
+const page = usePage()
+const error = computed(() => page.props.errors);
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
-
+    <div class="flex justify-center items-center h-screen">
         <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    :href="route('login')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Already registered?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Register
-                </PrimaryButton>
+            <div class="bg-gray-900 p-12 rounded-2xl flex flex-col space-y-4 text-center text-white">
+                <p class="text-2xl text-white font-bold">Become a part of it</p>
+                <input class="bg-gray-800 border-none border p-2 rounded" v-model="form.email" type="email" name="email" placeholder="mail">
+                <input class="bg-gray-800 border-none border p-2 rounded" v-model="form.name" type="text" name="name" placeholder="name">
+                <input class="bg-gray-800 border-none border p-2 rounded" v-model="form.password" type="password" name="password" placeholder="password">
+                <p v-if="error" class="text-red-800">{{ error.name }}</p>
+                <Link href="/signin"class="text-white hover:text-blue-500">Already have an account?</Link>
+                <button type="submit" class="text-white p-3 rounded-2xl bg-blue-500 hover:bg-blue-600">Sign Up</button>
             </div>
         </form>
-    </GuestLayout>
+    </div>
 </template>
