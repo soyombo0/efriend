@@ -4,18 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Game;
+use App\Http\Services\EfriendService;
 
 class EfriendController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // protected function __construct(
+    //     protected EfriendService $service
+    // ){}
+
     public function index()
     {
-        $efriends = User::where('is_efriend', '1');
+        $efriends = User::where('is_efriend', true)->with('games')->get();
 
         return inertia('Efriends/Efriends', [
             'efriends' => $efriends
+        ]);
+    }
+
+    public function addGame(Request $request, User $user, Game $game)
+    {
+        $user->games()->attach($game);
+
+
+        return response()->json([
+            'user' => $user,
+            'message' => 'successfully attached'
         ]);
     }
 
