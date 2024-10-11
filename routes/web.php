@@ -32,6 +32,7 @@ Route::prefix('games')->group(function (Router $router) {
 
 Route::prefix('efriends')->group(function (Router $router) {
     $router->get('/', [EfriendController::class, 'index']);
+    $router->get('/{user}', [EfriendController::class, 'show']);
 });
 
 Route::middleware('auth')->group(function (Router $router) {

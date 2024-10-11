@@ -13,9 +13,23 @@ class EfriendController extends Controller
     //     protected EfriendService $service
     // ){}
 
-    public function index()
+    public function index(Request $request)
     {
-        $efriends = User::where('is_efriend', true)->with('games')->get();
+        if ($request->has('game')) {
+            $efriends = User::where('is_efriend', true)
+                ->whereHas('games', function($query) use ($request) {
+                    $query->where('name', $request->game);
+                })
+                ->with('games')
+                ->get();
+        } elseif ($request->has('name')) {
+            $efriends = User::where('is_efriend', true)
+                ->where('name', 'like', '%' . $request->name . '%')
+                ->with('games')
+                ->get();
+        } else {
+            $efriends = User::where('is_efriend', true)->with('games')->get();
+        }
 
         return inertia('Efriends/Efriends', [
             'efriends' => $efriends
@@ -25,7 +39,6 @@ class EfriendController extends Controller
     public function addGame(Request $request, User $user, Game $game)
     {
         $user->games()->attach($game);
-
 
         return response()->json([
             'user' => $user,
@@ -38,15 +51,16 @@ class EfriendController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        return inertia('Profile/Efriend', [
+            'user' => $user
+        ]);
     }
 
     /**
