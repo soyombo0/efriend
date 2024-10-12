@@ -27,7 +27,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::get('/logout', [AuthController::class, 'logout']);
 
 Route::prefix('games')->group(function (Router $router) {
-    $router->get('/', [GameController::class, 'index']);
+    $router->get('/', [GameController::class, 'index'])->name('games.index');
 });
 
 Route::prefix('efriends')->group(function (Router $router) {
@@ -36,8 +36,8 @@ Route::prefix('efriends')->group(function (Router $router) {
 });
 
 Route::middleware('auth')->group(function (Router $router) {
-    $router->get('profile', [ProfileController::class, 'create'])->name('profile');
-    $router->put('/user', [ProfileController::class, 'update'])->name('user.update');
-    $router->post('/user/pic', [ProfileController::class, 'storePic'])->name('user.pic.store');
+    $router->get('user', [UserController::class, 'create'])->name('profile');
+    $router->put('/user', [UserController::class, 'update'])->name('user.update');
+    $router->post('/user/pic', [UserController::class, 'storePic'])->name('user.pic.store');
 });
 

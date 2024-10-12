@@ -46,11 +46,17 @@ class EfriendController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, User $user, Game $game)
     {
+        $user->is_efriend = true;
+        $user->price = $request->price;
+        $this->addGame($request, $user, $game);
+        $user->save();
+
+        return response()->json([
+            'user' => $user,
+            'message' => 'successfully became efriend'
+        ]);
     }
 
     /**

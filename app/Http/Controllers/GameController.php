@@ -25,13 +25,10 @@ class GameController extends Controller
      */
     public function store(StoreGameRequest $request)
     {
-        $img = $request->file('image');
+        $data = $request->validated();
+        Game::create($data);
 
-        $path = Storage::disk('s3')->put('/', $img);
-
-        return response()->json([
-            'image' => $path
-        ]);
+        return redirect()->route('games.index');
     }
 
     /**
