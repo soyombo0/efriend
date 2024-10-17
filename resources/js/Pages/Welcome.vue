@@ -1,5 +1,16 @@
 <script setup>
+import { usePage } from "@inertiajs/vue3";
+import {onMounted, onUnmounted} from "vue";
 
+onMounted(() => {
+   const user = usePage().props.auth.user
+
+   window.Echo.private(`App.Models.User.${user.id}`)
+        .listen('ReverbExampleEvent', (e) => {
+           alert('Reverb 🚀')
+     })
+
+});
 </script>
 
 <template>

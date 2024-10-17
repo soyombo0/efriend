@@ -79,12 +79,15 @@ services:
             "
     queue_worker:
         container_name: queue_worker
+        restart: always
         image: serversideup/php:8.3-fpm
+        ports:
+            - "8080:8080"
         volumes:
             - ./../:/var/www
-        command: [ "php", "/var/www/artisan", "queue:work", "--tries=3" ]
+        command: [ "php", "/var/www/artisan", "reverb:start", "--port=8080" ]
         environment:
-            PHP_FPM_POOL_NAME: "efriend_horizon"
+            PHP_FPM_POOL_NAME: "efriend_reverb"
         depends_on:
             - redis
         networks:

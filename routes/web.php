@@ -3,13 +3,11 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EfriendController;
 use App\Http\Controllers\GameController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\Post;
-use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     $posts = Post::query();
@@ -39,5 +37,9 @@ Route::middleware('auth')->group(function (Router $router) {
     $router->get('user', [UserController::class, 'create'])->name('profile');
     $router->put('/user', [UserController::class, 'update'])->name('user.update');
     $router->post('/user/pic', [UserController::class, 'storePic'])->name('user.pic.store');
+
+
+    $router->get('/payment', [PaymentController::class, 'create'])->name('payment.create');
+    $router->post('/payment', [PaymentController::class, 'pay'])->name('payment.pay');
 });
 
