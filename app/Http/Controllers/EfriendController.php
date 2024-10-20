@@ -31,6 +31,7 @@ class EfriendController extends Controller
             $efriends = User::where('is_efriend', true)->with('games')->get();
         }
 
+
         return inertia('Efriends/Efriends', [
             'efriends' => $efriends
         ]);
